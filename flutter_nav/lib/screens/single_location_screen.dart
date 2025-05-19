@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/models.dart';
 import 'locations_screen.dart'; // For LocationItem, Desk, normalizeDate
-// Assuming ApiService might be used later, but not directly in this dialog for now
-// import '../services/api_service.dart';
 
 class SingleLocationScreen extends StatefulWidget {
   final LocationItem location;
@@ -21,7 +19,10 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
   List<Desk> _availableDesksForSelectedDay = [];
-  bool _isBooking = false; // To show a loading indicator on the dialog
+  bool _isBooking = false;
+
+  // Define a breakpoint for switching between layouts
+  static const double kTabletBreakpoint = 720.0; // Adjust as needed
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = normalizeDate(selectedDay);
-        _focusedDay = focusedDay;
+        _focusedDay = focusedDay; // Keep focused day in sync with selection
         _updateAvailableDesks();
       });
     }
@@ -52,17 +53,10 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
   }
 
   Future<void> _showBookingDialog(Desk desk, DateTime date) async {
-    // Use a ValueNotifier for the loading state within the dialog if needed,
-    // or manage it via _isBooking and a StatefulWidget for the dialog content.
-    // For simplicity, we'll use _isBooking for now, which requires the dialog
-    // to be rebuilt if the state changes while it's open.
-    // A more robust way for dialog-specific state is a StatefulBuilder or a dedicated StatefulWidget.
-
     return showDialog<void>(
       context: context,
-      barrierDismissible: !_isBooking, // Prevent dismissing while "booking"
+      barrierDismissible: !_isBooking,
       builder: (BuildContext dialogContext) {
-        // Using StatefulBuilder to manage the loading state within the dialog itself
         return StatefulBuilder(builder: (context, setDialogState) {
           return AlertDialog(
             title: const Text('Confirm Booking'),
@@ -93,7 +87,6 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
                 onPressed: _isBooking
                     ? null
                     : () {
-                        // Disable if booking
                         Navigator.of(dialogContext).pop();
                       },
               ),
@@ -105,20 +98,12 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
                 onPressed: _isBooking
                     ? null
                     : () async {
-                        // Disable if booking
                         setDialogState(() {
                           _isBooking = true;
                         });
-
-                        // Simulate API call for booking
                         bool bookingSuccess = await _processBooking(desk, date);
-
-                        // Important: Check if the dialog is still mounted before trying to pop or show SnackBar
                         if (!dialogContext.mounted) return;
-
-                        Navigator.of(dialogContext).pop(); // Close dialog
-
-                        // Show SnackBar based on booking result
+                        Navigator.of(dialogContext).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -130,25 +115,10 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
                                 bookingSuccess ? Colors.green : Colors.red,
                           ),
                         );
-
                         if (bookingSuccess) {
-                          // OPTIONAL: Update UI to reflect booking (e.g., remove desk from available list)
-                          // This requires modifying the dummy data or having a real backend.
-                          // For now, we just show a message.
-                          // If you were to update, you'd need to:
-                          // 1. Modify widget.location.dailyDeskAvailability
-                          // 2. Call _updateAvailableDesks()
-                          // 3. Call setState(() {}); in the main screen's state
                           _handleSuccessfulBooking(desk, date);
                         }
-
-                        // Reset booking state for the next dialog instance (if the dialog is shown again)
-                        // This _isBooking is part of the _SingleLocationScreenState, so it persists.
-                        // If we were using a ValueNotifier specific to the dialog, it would be cleaner.
-                        // For now, we'll reset it after the dialog is fully handled.
-                        // We need to ensure this setState is for the main screen if _isBooking is from there.
                         if (mounted) {
-                          // Check if the main screen state is still mounted
                           setState(() {
                             _isBooking = false;
                           });
@@ -167,10 +137,7 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
         });
       },
     ).then((_) {
-      // This ensures _isBooking is reset if the dialog is dismissed by tapping outside (if barrierDismissible is true and not booking)
-      // or by Android back button.
       if (mounted && _isBooking) {
-        // Check if the main screen state is still mounted
         setState(() {
           _isBooking = false;
         });
@@ -178,46 +145,162 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
     });
   }
 
-  // Simulate booking process
   Future<bool> _processBooking(Desk desk, DateTime date) async {
-    // In a real app, this would be an API call:
-    // try {
-    //   final response = await apiService.post('bookings', body: {
-    //     'deskId': desk.id,
-    //     'locationId': widget.location.id,
-    //     'date': date.toIso8601String().substring(0, 10),
-    //     'userId': 'currentUser' // or get from auth service
-    //   });
-    //   return true; // if response is successful
-    // } catch (e) {
-    //   print("Booking error: $e");
-    //   return false;
-    // }
-
-    await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
-    // Simulate random success/failure
+    await Future.delayed(const Duration(seconds: 2));
     return DateTime.now().second % 2 == 0;
   }
 
   void _handleSuccessfulBooking(Desk bookedDesk, DateTime date) {
-    // This is where you'd update your local data if not using a live backend
-    // For this demo, we'll modify the dummy data. This is NOT ideal for production
-    // as the router holds the "source of truth" for dummy data.
-    // A proper state management solution is needed for robust updates.
-
     final normalizedDate = normalizeDate(date);
     if (widget.location.dailyDeskAvailability.containsKey(normalizedDate)) {
       widget.location.dailyDeskAvailability[normalizedDate]
           ?.remove(bookedDesk.id);
-      // Since dailyDeskAvailability is part of widget.location, and widget.location
-      // comes from the router, this modification is on a copy if the router
-      // passes a new instance each time. If it's a reference, it might work.
-      // This highlights the need for better state management.
-      _updateAvailableDesks(); // Re-filter the list
+      _updateAvailableDesks();
       if (mounted) {
-        setState(() {}); // Trigger a rebuild of the SingleLocationScreen
+        setState(() {});
       }
     }
+  }
+
+  // --- Widget Builders for Layout ---
+  Widget _buildCalendarSection() {
+    return Card(
+      // Wrap calendar in a card for better visual separation
+      margin: const EdgeInsets.all(8.0),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0), // Inner padding for the card
+        child: TableCalendar(
+          firstDay:
+              normalizeDate(DateTime.now().subtract(const Duration(days: 365))),
+          lastDay: normalizeDate(DateTime.now().add(const Duration(days: 365))),
+          focusedDay: _focusedDay,
+          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+          onDaySelected: _onDaySelected,
+          calendarFormat: CalendarFormat.month,
+          headerStyle: const HeaderStyle(
+            formatButtonVisible: false,
+            titleCentered: true,
+            titleTextStyle:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          calendarStyle: CalendarStyle(
+            todayDecoration: BoxDecoration(
+              color: Colors.orange.withOpacity(0.5),
+              shape: BoxShape.circle,
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: BoxShape.circle,
+            ),
+            // Potentially make cells smaller for a tighter calendar
+            // cellMargin: EdgeInsets.all(2.0),
+          ),
+          daysOfWeekStyle: const DaysOfWeekStyle(
+              // weekendStyle: TextStyle(color: Colors.red[600]),
+              ),
+          onPageChanged: (focusedDay) {
+            // Update focusedDay if user swipes month, but don't change selectedDay
+            setState(() {
+              _focusedDay = focusedDay;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAvailabilitySummary() {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Desks Available on',
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              MaterialLocalizations.of(context).formatMediumDate(_selectedDay),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '${_availableDesksForSelectedDay.length}',
+              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+            ),
+            Text(
+              _availableDesksForSelectedDay.length == 1 ? 'Desk' : 'Desks',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeskListSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            'Available Desks on ${MaterialLocalizations.of(context).formatShortDate(_selectedDay)}:',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Expanded(
+          child: _availableDesksForSelectedDay.isEmpty
+              ? const Center(
+                  child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('No desks available on this day.',
+                      style: TextStyle(fontSize: 16)),
+                ))
+              : ListView.builder(
+                  padding: const EdgeInsets.only(
+                      right: 8.0, left: 8.0, bottom: 8.0), // Add some padding
+                  itemCount: _availableDesksForSelectedDay.length,
+                  itemBuilder: (context, index) {
+                    final desk = _availableDesksForSelectedDay[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
+                      child: ListTile(
+                        leading: Icon(
+                            desk.type == "Standing"
+                                ? Icons.desk_outlined
+                                : Icons.chair_outlined,
+                            color: Theme.of(context).primaryColor),
+                        title: Text(desk.name,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text('Type: ${desk.type}'),
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            _showBookingDialog(desk, _selectedDay);
+                          },
+                          child: const Text('Book'),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -226,72 +309,58 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
       appBar: AppBar(
         title: Text(widget.location.name),
       ),
-      body: Column(
-        children: [
-          TableCalendar(
-            firstDay: normalizeDate(
-                DateTime.now().subtract(const Duration(days: 365))),
-            lastDay:
-                normalizeDate(DateTime.now().add(const Duration(days: 365))),
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            onDaySelected: _onDaySelected,
-            calendarFormat: CalendarFormat.month,
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: true,
-            ),
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.5),
-                shape: BoxShape.circle,
-              ),
-              selectedDecoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Available Desks on ${MaterialLocalizations.of(context).formatShortDate(_selectedDay)}:',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-          Expanded(
-            child: _availableDesksForSelectedDay.isEmpty
-                ? const Center(child: Text('No desks available on this day.'))
-                : ListView.builder(
-                    itemCount: _availableDesksForSelectedDay.length,
-                    itemBuilder: (context, index) {
-                      final desk = _availableDesksForSelectedDay[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 4.0),
-                        child: ListTile(
-                          leading: Icon(desk.type == "Standing"
-                              ? Icons.desk_outlined
-                              : Icons.chair_outlined),
-                          title: Text(desk.name),
-                          subtitle: Text('Type: ${desk.type}'),
-                          trailing: ElevatedButton(
-                            onPressed: () {
-                              _showBookingDialog(
-                                  desk, _selectedDay); // Call the dialog
-                            },
-                            child: const Text('Book'),
-                          ),
-                        ),
-                      );
-                    },
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if (constraints.maxWidth > kTabletBreakpoint) {
+            // --- Wide Screen Layout (Two Columns) ---
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Left Column (Calendar and Summary)
+                SizedBox(
+                  width: constraints.maxWidth *
+                      0.4, // Adjust width as needed (e.g., 350, 400, or percentage)
+                  child: SingleChildScrollView(
+                    // Allow scrolling if content overflows vertically
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildCalendarSection(),
+                        const SizedBox(height: 16),
+                        _buildAvailabilitySummary(),
+                      ],
+                    ),
                   ),
-          ),
-        ],
+                ),
+                const VerticalDivider(width: 1, thickness: 1),
+                // Right Column (Desk List)
+                Expanded(
+                  child: _buildDeskListSection(),
+                ),
+              ],
+            );
+          } else {
+            // --- Narrow Screen Layout (Single Column) ---
+            return SingleChildScrollView(
+              // Add scroll for narrow screens
+              child: Column(
+                children: [
+                  _buildCalendarSection(),
+                  _buildAvailabilitySummary(), // Summary below calendar
+                  const Divider(),
+                  // Desk list section needs a defined height or to be non-expanded in SingleChildScrollView
+                  // Let's give it a fixed height or make it shrinkwrap for this example
+                  SizedBox(
+                    height:
+                        400, // Or use ConstrainedBox, or make _buildDeskListSection return a non-Expanded widget
+                    child: _buildDeskListSection(),
+                  )
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }
