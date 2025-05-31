@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../services/settings_service.dart';
 
@@ -179,7 +180,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: const Text("Save Nickname")),
           ),
           const Divider(),
-
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.admin_panel_settings),
+            title: const Text('Admin Panel'),
+            trailing: const Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              context.go('/admin'); // Navigate to the admin page
+            },
+          ),
+          const Divider(),
           const SizedBox(height: 20),
           Center(
             child: Text(

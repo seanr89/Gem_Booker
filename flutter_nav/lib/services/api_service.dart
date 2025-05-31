@@ -201,6 +201,32 @@ class ApiService {
     }
   }
   */
+
+  // lib/services/api_service.dart
+// ... (existing ApiService code) ...
+
+// Add this method to the ApiService class:
+  Future<bool> checkHealth() async {
+    // In a real app, you'd hit a specific health check endpoint:
+    // try {
+    //   final response = await http.get(_buildUri('health', null))
+    //                           .timeout(const Duration(seconds: 5));
+    //   return response.statusCode == 200;
+    // } catch (e) {
+    //   print("Health check failed: $e");
+    //   return false;
+    // }
+
+    // Simulate network delay and random success
+    print("Simulating API health check...");
+    await Future.delayed(const Duration(milliseconds: 700));
+    bool isHealthy =
+        DateTime.now().second % 3 != 0; // Fails roughly 1/3 of the time
+    print("API Health Check Result: ${isHealthy ? 'Healthy' : 'Unhealthy'}");
+    return isHealthy;
+  }
+
+  // ... (rest of ApiService code) ...
 }
 
 /// Custom Exception class for API related errors.

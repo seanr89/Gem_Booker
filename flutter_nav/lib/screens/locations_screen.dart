@@ -3,15 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../models/models.dart'; // Import go_router
 
-// A simple data model for our locations
-// class LocationItem {
-//   final String id;
-//   final String name;
-//   final String address;
-
-//   LocationItem({required this.id, required this.name, required this.address});
-// }
-
 class LocationsScreen extends StatelessWidget {
   // Can be StatelessWidget if locations are passed in
   final List<LocationItem> locations;

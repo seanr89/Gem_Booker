@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+enum ApiStatus { unknown, healthy, unhealthy, checking }
+
 class DashboardCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String value;
   final Color iconColor;
   final VoidCallback? onTap;
+  final ApiStatus? apiStatus; // New parameter for API status
 
   const DashboardCard({
     super.key,
@@ -14,14 +17,57 @@ class DashboardCard extends StatelessWidget {
     required this.value,
     this.iconColor = Colors.blue,
     this.onTap,
+    this.apiStatus, // Initialize
   });
+
+  Widget _buildStatusBadge() {
+    Color badgeColor;
+    Widget? child;
+
+    switch (apiStatus) {
+      case ApiStatus.healthy:
+        badgeColor = Colors.green;
+        break;
+      case ApiStatus.unhealthy:
+        badgeColor = Colors.red;
+        break;
+      case ApiStatus.checking:
+        badgeColor = Colors.orange;
+        child = const SizedBox(
+            width: 8,
+            height: 8,
+            child: CircularProgressIndicator(
+                strokeWidth: 1.5, color: Colors.white));
+        break;
+      case ApiStatus.unknown:
+      default:
+        badgeColor = Colors.grey;
+        break;
+    }
+
+    return Container(
+      width: 12.0,
+      height: 12.0,
+      decoration: BoxDecoration(
+        color: badgeColor,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: badgeColor.withOpacity(0.5),
+            blurRadius: 3.0,
+            spreadRadius: 1.0,
+          )
+        ],
+      ),
+      child: child != null ? Center(child: child) : null,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2.0,
       child: InkWell(
-        // Make it tappable
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -29,7 +75,14 @@ class DashboardCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(icon, size: 40.0, color: iconColor),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(icon, size: 40.0, color: iconColor),
+                  if (apiStatus != null)
+                    _buildStatusBadge(), // Display badge if status is provided
+                ],
+              ),
               const SizedBox(height: 10.0),
               Text(
                 title,
@@ -52,7 +105,7 @@ class DashboardCard extends StatelessWidget {
   }
 }
 
-// A more complex card for lists or other content
+// ComplexDashboardCard remains the same for now
 class ComplexDashboardCard extends StatelessWidget {
   final String title;
   final Widget child;
@@ -90,7 +143,6 @@ class ComplexDashboardCard extends StatelessWidget {
             ),
             const Divider(height: 20, thickness: 1),
             Expanded(
-              // Allow child to take available space
               child: child,
             ),
           ],
