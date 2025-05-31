@@ -1,0 +1,48 @@
+# This workflow builds a Flutter web application and deploys it to Azure Static Web Apps.
+
+name: Flutter Web Build
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the main branch
+  pull_request:
+    branches:
+      - main # Trigger the workflow on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4 # Action to check out your repository code
+
+      - name: 2. Set up Flutter SDK
+        uses: subosito/flutter-action@v2 # Action to set up Flutter environment
+        with:
+          flutter-version: '3.x' # Specify the Flutter version (e.g., '3.x', '3.19.x', or a specific version like '3.19.6')
+          channel: 'stable' # Use the stable channel
+
+      - name: 3. Enable Flutter Web Support
+        run: flutter config --enable-web # Command to enable web support for Flutter
+
+      - name: 4. Get Flutter Dependencies
+        run: flutter pub get # Command to fetch all package dependencies
+
+      - name: 5. Build Flutter Web Application
+        working-directory: ./flutter_nav # Set the working directory to the root of the repository
+        run: flutter build web --release # Command to build the web application in release mode
+
+      - name: 6. Deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1 # Action to deploy to Azure Static Web Apps
+        #working-directory: ./flutter_nav # Set the working directory to the root of the repository
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }} # Secret token for authentication
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for GitHub integrations (e.g., closing issues)
+          action: "upload" # Specify the action as "upload" for deployment
+          app_location: "/build/web" # The location of your Flutter web build output
+          api_location: "" # No API backend for this example
+          output_location: "/build/web" # The output location of the build, typically the same as app_location for single-page apps
+          skip_app_build: true # Skip the app build step as Flutter build is already done
+          skip_api_build: true # Skip the API build step as there's no API
