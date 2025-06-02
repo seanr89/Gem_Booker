@@ -1,6 +1,7 @@
 import 'dart:math';
+import 'package:table_calendar/table_calendar.dart';
 import 'api_service.dart'; // Your generic API service
-import '../models/desk_model.dart'; // If needed directly
+// If needed directly
 import '../models/location_model.dart'; // Import LocationItem model
 
 class LocationService {
