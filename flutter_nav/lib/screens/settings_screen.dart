@@ -191,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const Divider(),
           const SizedBox(height: 20),
-          Center(
+          const Center(
             child: Text(
               'Text affected by font size setting.',
               style: TextStyle(

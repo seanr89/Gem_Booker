@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../models/models.dart';
-import 'locations_screen.dart'; // For LocationItem, Desk, normalizeDate
+import '../models/desk_model.dart';
+import '../models/location_model.dart';
+// For LocationItem, Desk, normalizeDate
 
 class SingleLocationScreen extends StatefulWidget {
   final LocationItem location;

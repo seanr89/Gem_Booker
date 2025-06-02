@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'models/desk_model.dart';
+import 'models/location_model.dart';
 import 'models/models.dart';
 import 'screens/home_screen.dart';
 import 'screens/locations_screen.dart';
@@ -23,7 +25,7 @@ List<LocationItem> _generateSampleLocations() {
   final List<LocationItem> locations = [];
   final today = normalizeDate(DateTime.now());
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 5; i++) {
     List<Desk> desksForThisLocation = [];
     for (int j = 0; j < random.nextInt(15) + 5; j++) {
       desksForThisLocation.add(Desk(

@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late ApiService _apiService; // To be initialized
 
   // Refresh interval for API status
-  static const Duration _refreshInterval = Duration(seconds: 10);
+  static const Duration _refreshInterval = Duration(seconds: 30);
 
   @override
   void initState() {

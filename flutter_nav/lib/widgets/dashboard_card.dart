@@ -46,8 +46,8 @@ class DashboardCard extends StatelessWidget {
     }
 
     return Container(
-      width: 12.0,
-      height: 12.0,
+      width: 22.0,
+      height: 22.0,
       decoration: BoxDecoration(
         color: badgeColor,
         shape: BoxShape.circle,
