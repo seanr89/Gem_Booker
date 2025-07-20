@@ -43,14 +43,8 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Seat Booker',
       theme: ThemeData(
-        // brightness:
-        //     settings.darkModeEnabled ? Brightness.dark : Brightness.light,
         primarySwatch: Colors.blue,
         useMaterial3: true,
-        // You can also adjust textTheme based on settings.fontSizeMultiplier here
-        // textTheme: Theme.of(context).textTheme.apply(
-        //       fontSizeFactor: settings.fontSizeMultiplier,
-        //     ),
       ),
       routerConfig: router,
     );

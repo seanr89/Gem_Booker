@@ -33,10 +33,10 @@ class LocationService {
       // Assuming responseData is a Map<String, dynamic>
       return LocationItem.fromJson(responseData as Map<String, dynamic>);
     } on ApiException catch (e) {
-      print('LocationService Error - getLocationById ($id): ${e.message}');
+      //print('LocationService Error - getLocationById ($id): ${e.message}');
       rethrow;
     } catch (e) {
-      print('LocationService Unexpected Error - getLocationById ($id): $e');
+      //print('LocationService Unexpected Error - getLocationById ($id): $e');
       throw Exception('Failed to load location with ID $id');
     }
   }
@@ -49,7 +49,7 @@ class LocationService {
     // For now, we'll return dummy data or an empty map from the LocationItem itself
     // This is because the initial LocationItem.fromJson might not populate it fully.
     // In a real app, you'd make an API call here.
-    print("Fetching availability for $locationId on $date (Simulated)");
+    //print("Fetching availability for $locationId on $date (Simulated)");
     await Future.delayed(
         const Duration(milliseconds: 300)); // Simulate API call
 
