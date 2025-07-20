@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_nav/models/desk_model.dart';
 import 'package:flutter_nav/models/location_model.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class Helpers {
   // Private constructor to prevent instantiation
@@ -45,7 +46,7 @@ class Helpers {
   }
 
   /// Returns `date` in UTC format, without its time part.
-  static DateTime normalizeDate(DateTime date) {
-    return DateTime.utc(date.year, date.month, date.day);
-  }
+  // static DateTime normalizeDate(DateTime date) {
+  //   return DateTime.utc(date.year, date.month, date.day);
+  // }
 }

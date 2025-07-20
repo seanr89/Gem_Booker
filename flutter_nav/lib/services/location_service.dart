@@ -58,7 +58,7 @@ class LocationService {
     final List<String> deskIds = List.generate(
         random.nextInt(5) + 2, (i) => 'desk_sim_${locationId}_$i');
     Map<DateTime, List<String>> availability = {};
-    availability[Helpers.normalizeDate(date)] = deskIds;
+    availability[normalizeDate(date)] = deskIds;
     return availability;
   }
 }
