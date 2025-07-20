@@ -218,7 +218,7 @@ class ApiService {
     // }
 
     // Simulate network delay and random success
-    print("Simulating API health check...");
+    //print("Simulating API health check...");
     await Future.delayed(const Duration(milliseconds: 700));
     bool isHealthy =
         DateTime.now().second % 3 != 0; // Fails roughly 1/3 of the time

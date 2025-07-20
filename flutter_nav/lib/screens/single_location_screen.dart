@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nav/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/desk_model.dart';
 import '../models/location_model.dart';
@@ -30,14 +31,14 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
     super.initState();
     final today = DateTime.now();
     _focusedDay = today;
-    _selectedDay = normalizeDate(today);
+    _selectedDay = Helpers.normalizeDate(today);
     _updateAvailableDesks();
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
-        _selectedDay = normalizeDate(selectedDay);
+        _selectedDay = Helpers.normalizeDate(selectedDay);
         _focusedDay = focusedDay; // Keep focused day in sync with selection
         _updateAvailableDesks();
       });
@@ -45,7 +46,7 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
   }
 
   void _updateAvailableDesks() {
-    final normalizedSelectedDay = normalizeDate(_selectedDay);
+    final normalizedSelectedDay = Helpers.normalizeDate(_selectedDay);
     final availableDeskIds =
         widget.location.dailyDeskAvailability[normalizedSelectedDay] ?? [];
     _availableDesksForSelectedDay = widget.location.allDesks
@@ -152,7 +153,7 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
   }
 
   void _handleSuccessfulBooking(Desk bookedDesk, DateTime date) {
-    final normalizedDate = normalizeDate(date);
+    final normalizedDate = Helpers.normalizeDate(date);
     if (widget.location.dailyDeskAvailability.containsKey(normalizedDate)) {
       widget.location.dailyDeskAvailability[normalizedDate]
           ?.remove(bookedDesk.id);
@@ -172,9 +173,10 @@ class _SingleLocationScreenState extends State<SingleLocationScreen> {
       child: Padding(
         padding: const EdgeInsets.all(8.0), // Inner padding for the card
         child: TableCalendar(
-          firstDay:
-              normalizeDate(DateTime.now().subtract(const Duration(days: 365))),
-          lastDay: normalizeDate(DateTime.now().add(const Duration(days: 365))),
+          firstDay: Helpers.normalizeDate(
+              DateTime.now().subtract(const Duration(days: 365))),
+          lastDay: Helpers.normalizeDate(
+              DateTime.now().add(const Duration(days: 365))),
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
           onDaySelected: _onDaySelected,

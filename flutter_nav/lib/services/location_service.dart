@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter_nav/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'api_service.dart'; // Your generic API service
 // If needed directly
@@ -57,7 +58,7 @@ class LocationService {
     final List<String> deskIds = List.generate(
         random.nextInt(5) + 2, (i) => 'desk_sim_${locationId}_$i');
     Map<DateTime, List<String>> availability = {};
-    availability[normalizeDate(date)] = deskIds;
+    availability[Helpers.normalizeDate(date)] = deskIds;
     return availability;
   }
 }

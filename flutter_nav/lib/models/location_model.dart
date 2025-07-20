@@ -1,4 +1,4 @@
-import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_nav/utils/helpers.dart';
 
 import 'desk_model.dart'; // Import Desk model
 
@@ -44,7 +44,7 @@ class LocationItem {
       (json['dailyDeskAvailability'] as Map<String, dynamic>)
           .forEach((dateString, deskIds) {
         try {
-          final date = normalizeDate(DateTime.parse(dateString));
+          final date = Helpers.normalizeDate(DateTime.parse(dateString));
           if (deskIds is List) {
             availability[date] = List<String>.from(deskIds);
           }
