@@ -1,5 +1,6 @@
 import 'dart:async'; // For Timer
 import 'package:flutter/material.dart';
+import 'package:flutter_nav/widgets/app_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart'; // To access ApiService if provided globally
 import '../widgets/dashboard_card.dart';
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ApiStatus _apiStatus = ApiStatus.unknown;
   Timer? _apiStatusTimer;
-  late ApiService _apiService; // To be initialized
+  //late ApiService _apiService; // To be initialized
 
   // Refresh interval for API status
   static const Duration _refreshInterval = Duration(seconds: 30);
@@ -39,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // If not using Provider for ApiService, you'd instantiate it here:
     // _apiService = ApiService(baseUrl: 'YOUR_API_BASE_URL');
     // If using Provider and ApiService is provided higher up:
-    _apiService = Provider.of<ApiService>(context, listen: false);
+    //_apiService = Provider.of<ApiService>(context, listen: false);
 
     _fetchApiStatus(); // Initial fetch
     _apiStatusTimer = Timer.periodic(_refreshInterval, (timer) {
@@ -60,11 +61,11 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      bool isHealthy = await _apiService.checkHealth();
-      if (!mounted) return;
-      setState(() {
-        _apiStatus = isHealthy ? ApiStatus.healthy : ApiStatus.unhealthy;
-      });
+      // bool isHealthy = await _apiService.checkHealth();
+      // if (!mounted) return;
+      // setState(() {
+      //   _apiStatus = isHealthy ? ApiStatus.healthy : ApiStatus.unhealthy;
+      // });
     } catch (e) {
       if (!mounted) return;
       print("Error fetching API status: $e");
@@ -78,16 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh API Status',
-            onPressed: _fetchApiStatus, // Manual refresh
-          )
-        ],
-      ),
+      appBar: CustomAppBar(),
+      // appBar: AppBar(
+      //   title: const Text('Home Dashboard'),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.refresh),
+      //       tooltip: 'Refresh API Status',
+      //       onPressed: _fetchApiStatus, // Manual refresh
+      //     )
+      //   ],
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.count(

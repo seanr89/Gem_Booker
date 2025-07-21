@@ -12,7 +12,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final authState = ref.watch(authStateChangesProvider);
 
     return AppBar(
-      title: const Text('Flutter Auth Gem'),
+      title: const Text('Booker'),
       actions: [
         if (authState.value == null) ...[
           TextButton(
