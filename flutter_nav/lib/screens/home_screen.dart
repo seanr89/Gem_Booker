@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      //appBar: CustomAppBar(),
       // appBar: AppBar(
       //   title: const Text('Home Dashboard'),
       //   actions: [

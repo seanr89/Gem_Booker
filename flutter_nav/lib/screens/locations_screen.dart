@@ -14,16 +14,16 @@ class LocationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (locations.isEmpty) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Locations'),
-        ),
+        // appBar: AppBar(
+        //   title: const Text('Locations'),
+        // ),
         body: const Center(child: Text('No locations found.')),
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Locations'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Locations'),
+      // ),
       body: ListView.builder(
         itemCount: locations.length,
         itemBuilder: (BuildContext context, int index) {

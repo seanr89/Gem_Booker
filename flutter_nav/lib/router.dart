@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'models/location_model.dart';
 import 'screens/home_screen.dart';
 import 'screens/locations_screen.dart';
-import 'screens/settings_screen.dart';
+import 'package:flutter_nav/screens/profile_screen.dart';
 import 'screens/single_location_screen.dart';
 import 'screens/admin_screen.dart'; // Import the new admin screen
 import 'widgets/main_shell.dart';
@@ -73,9 +73,9 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(
-            path: '/settings',
+            path: '/profile',
             parentNavigatorKey: _shellNavigatorKey,
-            builder: (context, state) => const SettingsScreen(),
+            builder: (context, state) => const ProfileScreen(),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nav/widgets/app_bar.dart';
 import 'package:go_router/go_router.dart';
 
 class MainShell extends StatefulWidget {
@@ -16,7 +17,7 @@ class _MainShellState extends State<MainShell> {
     if (location.startsWith('/locations')) {
       return 1;
     }
-    if (location.startsWith('/settings')) {
+    if (location.startsWith('/profile')) {
       return 2;
     }
     // Default to home
@@ -32,7 +33,7 @@ class _MainShellState extends State<MainShell> {
         context.go('/locations');
         break;
       case 2:
-        context.go('/settings');
+        context.go('/profile');
         break;
     }
   }
@@ -40,6 +41,7 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomAppBar(),
       body: widget.child, // The current screen selected by the router
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _calculateSelectedIndex(context),
@@ -54,8 +56,8 @@ class _MainShellState extends State<MainShell> {
             label: 'Locations',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
