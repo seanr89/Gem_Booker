@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_nav/services/auth/firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' hide Provider; // Import provider
@@ -8,6 +9,7 @@ import 'services/api_service.dart';
 import 'services/settings_service.dart'; // Import SettingsService
 
 void main() async {
+  await dotenv.load(fileName: "assets/.env");
   // It's good practice to initialize services that might be needed early,
   // or ensure SharedPreferences is ready if your SettingsService constructor relies on it immediately.
   // However, SettingsService now handles its own async loading.
