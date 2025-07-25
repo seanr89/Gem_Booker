@@ -3,17 +3,8 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -52,12 +43,13 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_YOUR_API_KEY',
-    authDomain: 'REPLACE_WITH_YOUR_AUTH_DOMAIN',
-    projectId: 'REPLACE_WITH_YOUR_PROJECT_ID',
-    storageBucket: 'REPLACE_WITH_YOUR_STORAGE_BUCKET',
-    messagingSenderId: 'REPLACE_WITH_YOUR_MESSAGING_SENDER_ID',
-    appId: 'REPLACE_WITH_YOUR_APP_ID',
-  );
+  static FirebaseOptions get web => FirebaseOptions(
+        apiKey: dotenv.env['API_KEY']!,
+        authDomain: dotenv.env['AUTH_DOMAIN']!,
+        projectId: dotenv.env['PROJECT_ID']!,
+        storageBucket: dotenv.env['STORAGE_BUCKET']!,
+        messagingSenderId: dotenv.env['MESSAGING_SENDER_ID']!,
+        appId: dotenv.env['APP_ID']!,
+        measurementId: dotenv.env['MEASUREMENT_ID']!,
+      );
 }

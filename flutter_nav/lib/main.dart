@@ -9,12 +9,11 @@ import 'services/api_service.dart';
 import 'services/settings_service.dart'; // Import SettingsService
 
 void main() async {
-  await dotenv.load(fileName: "assets/.env");
-  // It's good practice to initialize services that might be needed early,
-  // or ensure SharedPreferences is ready if your SettingsService constructor relies on it immediately.
-  // However, SettingsService now handles its own async loading.
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await dotenv.load(fileName: "assets/.env");
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(child: MyApp()));
 }
 
