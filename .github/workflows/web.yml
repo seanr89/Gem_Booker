@@ -29,6 +29,7 @@ jobs:
         run: flutter config --enable-web # Command to enable web support for Flutter
 
       - name: 4. Get Flutter Dependencies
+        working-directory: ./flutter_nav # Set the working directory to the root of the repository
         run: flutter pub get # Command to fetch all package dependencies
 
       - name: 5. Build Flutter Web Application
