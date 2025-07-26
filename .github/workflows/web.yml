@@ -35,14 +35,3 @@ jobs:
       - name: 5. Build Flutter Web Application
         working-directory: ./flutter_nav # Set the working directory to the root of the repository
         run: flutter build web --release # Command to build the web application in release mode
-
-      # Optional: You can add steps here to deploy your built web app
-      # For example, to GitHub Pages, an S3 bucket, or another hosting service.
-      # Example for GitHub Pages (requires a separate action like peaceiris/actions-gh-pages):
-      # - name: Deploy to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   if: github.ref == 'refs/heads/main' # Only deploy from main branch
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./build/web # Directory where the web build output is located
-      #     cname: your-custom-domain.com # Optional: if you have a custom domain
