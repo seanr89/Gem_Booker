@@ -19,8 +19,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
-final GlobalKey<NavigatorState> _authNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'auth');
+
 
 final List<LocationItem> _sampleLocations = Helpers.generateSampleLocations();
 
@@ -79,23 +78,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      ShellRoute(
-          navigatorKey:
-              _authNavigatorKey, // Navigator for content within the shell
-          builder: (context, state, child) {
-            return child;
-          },
-          routes: [
-            GoRoute(
-                path: '/login',
-                parentNavigatorKey: _authNavigatorKey,
-                builder: (context, state) => const LoginScreen()),
-            GoRoute(
-              path: '/signup',
-              parentNavigatorKey: _authNavigatorKey,
-              builder: (context, state) => const SignupScreen(),
-            ),
-          ]),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) => const SignupScreen(),
+      ),
       GoRoute(
         path: '/admin',
         builder: (context, state) => const AdminScreen(),
