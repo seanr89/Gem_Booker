@@ -28,39 +28,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       appBar: const CustomAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 450),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    await authService.signIn(
+                      _emailController.text,
+                      _passwordController.text,
+                    );
+                  },
+                  child: const Text('Login'),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () {
+                    context.go('/signup');
+                  },
+                  child: const Text('Don\'t have an account? Sign up'),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await authService.signIn(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-              },
-              child: const Text('Login'),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () {
-                context.go('/signup');
-              },
-              child: const Text('Don\'t have an account? Sign up'),
-            ),
-          ],
+          ),
         ),
       ),
     );
