@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kDebugMode) {
     await dotenv.load(fileName: "assets/.env");
+  } else {
+    print('Skipping file load');
+    //print(const String.fromEnvironment('API_KEY', defaultValue: 'Unknown'));
   }
+  // await dotenv.load(fileName: "assets/.env", mergeWith: Platform.environment);
+  //await dotenv.load(fileName: "assets/.env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

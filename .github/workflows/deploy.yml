@@ -34,7 +34,7 @@ jobs:
 
       - name: 5. Build Flutter Web Application
         working-directory: ./flutter_nav # Set the working directory to the root of the repository
-        run: flutter build web --release # Command to build the web application in release mode
+        run: flutter build web --release --dart-define=API_KEY=${{ secrets.API_KEY }} --dart-define=AUTH_DOMAIN=${{ secrets.AUTH_DOMAIN }} --dart-define=PROJECT_ID=${{ secrets.PROJECT_ID }} --dart-define=STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }} --dart-define=MESSAGING_SENDER_ID=${{ secrets.MESSAGING_SENDER_ID }} --dart-define=APP_ID=${{ secrets.APP_ID }} --dart-define=MEASUREMENT_ID=${{ secrets.MEASUREMENT_ID }}
 
       - name: 6. Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1 # Action to deploy to Azure Static Web Apps

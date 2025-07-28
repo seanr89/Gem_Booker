@@ -2,7 +2,7 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_classes_with_only_static_members
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show TargetPlatform, defaultTargetPlatform, kDebugMode, kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DefaultFirebaseOptions {
@@ -44,12 +44,28 @@ class DefaultFirebaseOptions {
   }
 
   static FirebaseOptions get web => FirebaseOptions(
-        apiKey: dotenv.env['API_KEY']!,
-        authDomain: dotenv.env['AUTH_DOMAIN']!,
-        projectId: dotenv.env['PROJECT_ID']!,
-        storageBucket: dotenv.env['STORAGE_BUCKET']!,
-        messagingSenderId: dotenv.env['MESSAGING_SENDER_ID']!,
-        appId: dotenv.env['APP_ID']!,
-        measurementId: dotenv.env['MEASUREMENT_ID']!,
+        // Removed the if(!kIsWeb) block as it's not valid syntax here.
+        apiKey: kIsWeb && kDebugMode
+            ? dotenv.env['API_KEY']!
+            : const String.fromEnvironment('API_KEY', defaultValue: ''),
+        authDomain: kIsWeb && kDebugMode
+            ? dotenv.env['AUTH_DOMAIN']!
+            : const String.fromEnvironment('AUTH_DOMAIN', defaultValue: ''),
+        projectId: kIsWeb && kDebugMode
+            ? dotenv.env['PROJECT_ID']!
+            : const String.fromEnvironment('PROJECT_ID', defaultValue: ''),
+        storageBucket: kIsWeb && kDebugMode
+            ? dotenv.env['STORAGE_BUCKET']!
+            : const String.fromEnvironment('STORAGE_BUCKET', defaultValue: ''),
+        messagingSenderId: kIsWeb && kDebugMode
+            ? dotenv.env['MESSAGING_SENDER_ID']!
+            : const String.fromEnvironment('MESSAGING_SENDER_ID',
+                defaultValue: ''),
+        appId: kIsWeb && kDebugMode
+            ? dotenv.env['APP_ID']!
+            : const String.fromEnvironment('APP_ID', defaultValue: ''),
+        measurementId: kIsWeb && kDebugMode
+            ? dotenv.env['MEASUREMENT_ID']!
+            : const String.fromEnvironment('MEASUREMENT_ID', defaultValue: ''),
       );
 }
