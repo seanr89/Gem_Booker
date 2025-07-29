@@ -43,8 +43,8 @@ class DefaultFirebaseOptions {
     }
   }
 
+  // Initialise the options with env settings
   static FirebaseOptions get web => FirebaseOptions(
-        // Removed the if(!kIsWeb) block as it's not valid syntax here.
         apiKey: kIsWeb && kDebugMode
             ? dotenv.env['API_KEY']!
             : const String.fromEnvironment('API_KEY', defaultValue: ''),
