@@ -97,6 +97,24 @@ class DashboardCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
+              const SizedBox(height: 10.0),
+              if (apiStatus != null)
+                Text(
+                  apiStatus == ApiStatus.healthy
+                      ? 'Status: Healthy'
+                      : 'Status: Unhealthy',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: apiStatus == ApiStatus.healthy
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                ),
+              ElevatedButton(
+                onPressed: () {
+                  print('Button Pressed!');
+                },
+                child: const Text('Press Me'),
+              ),
             ],
           ),
         ),

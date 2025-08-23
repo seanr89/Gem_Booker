@@ -208,14 +208,15 @@ class ApiService {
 // Add this method to the ApiService class:
   Future<bool> checkHealth() async {
     // In a real app, you'd hit a specific health check endpoint:
-    // try {
-    //   final response = await http.get(_buildUri('health', null))
-    //                           .timeout(const Duration(seconds: 5));
-    //   return response.statusCode == 200;
-    // } catch (e) {
-    //   print("Health check failed: $e");
-    //   return false;
-    // }
+    try {
+      final response = await http
+          .get(_buildUri('health', null))
+          .timeout(const Duration(seconds: 5));
+      return response.statusCode == 200;
+    } catch (e) {
+      print("Health check failed: $e");
+      return false;
+    }
 
     // Simulate network delay and random success
     //print("Simulating API health check...");

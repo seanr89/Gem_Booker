@@ -20,7 +20,6 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
 
-
 final List<LocationItem> _sampleLocations = Helpers.generateSampleLocations();
 
 LocationItem? findLocationById(String id) {

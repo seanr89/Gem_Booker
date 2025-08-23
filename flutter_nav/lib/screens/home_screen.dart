@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ApiStatus _apiStatus = ApiStatus.unknown;
   Timer? _apiStatusTimer;
-  //late ApiService _apiService; // To be initialized
+  late ApiService _apiService; // To be initialized
 
   // Refresh interval for API status
   static const Duration _refreshInterval = Duration(seconds: 30);
@@ -38,14 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
     // It's better to get ApiService via Provider if it's already set up that way
     // For this example, assuming we might instantiate it or get it.
     // If not using Provider for ApiService, you'd instantiate it here:
-    // _apiService = ApiService(baseUrl: 'YOUR_API_BASE_URL');
+    _apiService = ApiService(
+        baseUrl:
+            'https://seatapi.kindmushroom-fdc7faf5.northeurope.azurecontainerapps.io');
     // If using Provider and ApiService is provided higher up:
     //_apiService = Provider.of<ApiService>(context, listen: false);
 
     _fetchApiStatus(); // Initial fetch
-    _apiStatusTimer = Timer.periodic(_refreshInterval, (timer) {
-      _fetchApiStatus();
-    });
+    // _apiStatusTimer = Timer.periodic(_refreshInterval, (timer) {
+    //   _fetchApiStatus();
+    // });
   }
 
   @override
@@ -79,17 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: CustomAppBar(),
-      // appBar: AppBar(
-      //   title: const Text('Home Dashboard'),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.refresh),
-      //       tooltip: 'Refresh API Status',
-      //       onPressed: _fetchApiStatus, // Manual refresh
-      //     )
-      //   ],
-      // ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.count(
