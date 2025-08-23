@@ -1,8 +1,8 @@
 import 'dart:async'; // For Timer
 import 'package:flutter/material.dart';
-import 'package:flutter_nav/widgets/app_bar.dart';
+import 'package:flutter_nav/services/azure_api_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart'; // To access ApiService if provided globally
+// To access ApiService if provided globally
 import '../widgets/dashboard_card.dart';
 import '../services/api_service.dart'; // Import ApiService
 
@@ -28,9 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   ApiStatus _apiStatus = ApiStatus.unknown;
   Timer? _apiStatusTimer;
   late ApiService _apiService; // To be initialized
+  late AzureApiService _azureApiService; // To be initialized
 
   // Refresh interval for API status
-  static const Duration _refreshInterval = Duration(seconds: 30);
+  static const Duration _refreshInterval = Duration(seconds: 60);
 
   @override
   void initState() {
@@ -43,11 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
             'https://seatapi.kindmushroom-fdc7faf5.northeurope.azurecontainerapps.io');
     // If using Provider and ApiService is provided higher up:
     //_apiService = Provider.of<ApiService>(context, listen: false);
+    _azureApiService = AzureApiService();
 
     _fetchApiStatus(); // Initial fetch
-    // _apiStatusTimer = Timer.periodic(_refreshInterval, (timer) {
-    //   _fetchApiStatus();
-    // });
+    _apiStatusTimer = Timer.periodic(_refreshInterval, (timer) {
+      _fetchApiStatus();
+    });
   }
 
   @override
@@ -63,11 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      // bool isHealthy = await _apiService.checkHealth();
-      // if (!mounted) return;
-      // setState(() {
-      //   _apiStatus = isHealthy ? ApiStatus.healthy : ApiStatus.unhealthy;
-      // });
+      bool isHealthy = await _azureApiService.checkHealth();
+      if (!mounted) return;
+      setState(() {
+        _apiStatus = isHealthy ? ApiStatus.healthy : ApiStatus.unhealthy;
+      });
     } catch (e) {
       if (!mounted) return;
       print("Error fetching API status: $e");
@@ -93,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icons.location_city,
               title: 'Total Locations',
               value: totalLocations.toString(),
+              azureApiService: _azureApiService,
               iconColor: Colors.green,
               apiStatus: _apiStatus, // Pass the status here
               onTap: () {
@@ -103,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icons.people_alt,
               title: 'Active Users',
               value: activeUsers.toString(),
+              azureApiService: _azureApiService,
               iconColor: Colors.orange,
               // You could add another status check for a different service here
               onTap: () {

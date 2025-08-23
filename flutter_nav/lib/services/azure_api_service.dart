@@ -3,6 +3,7 @@
 // =======================================================================
 
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'api_exception.dart';
 import '../models/building_model.dart';
@@ -13,7 +14,7 @@ import '../models/booking_model.dart';
 /// It manages the base URL, authentication headers, and core request logic.
 class AzureApiService {
   final String _baseUrl =
-      "https://seatapi.kindmushroom-fdc7faf5.northeurope.azurecontainerapps.io/api/v1";
+      "https://seatapi.kindmushroom-fdc7faf5.northeurope.azurecontainerapps.io/";
   String? _token;
 
   /// Sets the JWT token for authenticating API requests.
@@ -50,11 +51,36 @@ class AzureApiService {
   }
 
   // -------------------------------------------------------------------
+  // HealthCheck Endpoints
+  // -------------------------------------------------------------------
+  Future<bool> checkHealth() async {
+    print('Checking health...');
+    final user = FirebaseAuth.instance.currentUser!;
+    final idToken = await user.getIdToken();
+    final token = idToken;
+    setAuthToken(token!);
+    final response = await http.get(
+      Uri.parse('$_baseUrl/api/Home/CheckDbConnection'),
+      headers: _getHeaders(),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // Locations Endpoints
+  // -------------------------------------------------------------------
+
+  // -------------------------------------------------------------------
   // Building Endpoints
   // -------------------------------------------------------------------
 
   /// Fetches a list of all buildings.
   Future<List<Building>> getBuildings() async {
+    print('Getting buildings...');
     final response = await http.get(
       Uri.parse('$_baseUrl/building'),
       headers: _getHeaders(),

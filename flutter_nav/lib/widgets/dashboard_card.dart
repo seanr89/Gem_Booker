@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nav/services/azure_api_service.dart';
 
 enum ApiStatus { unknown, healthy, unhealthy, checking }
 
@@ -8,13 +9,15 @@ class DashboardCard extends StatelessWidget {
   final String value;
   final Color iconColor;
   final VoidCallback? onTap;
-  final ApiStatus? apiStatus; // New parameter for API status
+  final ApiStatus? apiStatus;
+  final AzureApiService azureApiService;
 
   const DashboardCard({
     super.key,
     required this.icon,
     required this.title,
     required this.value,
+    required this.azureApiService,
     this.iconColor = Colors.blue,
     this.onTap,
     this.apiStatus, // Initialize
@@ -99,22 +102,17 @@ class DashboardCard extends StatelessWidget {
               ),
               const SizedBox(height: 10.0),
               if (apiStatus != null)
-                Text(
-                  apiStatus == ApiStatus.healthy
-                      ? 'Status: Healthy'
-                      : 'Status: Unhealthy',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: apiStatus == ApiStatus.healthy
-                            ? Colors.green
-                            : Colors.red,
-                      ),
+                ElevatedButton(
+                  onPressed: () async {
+                    var res = await azureApiService.checkHealth();
+                    if (res == true) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('App Healthy!')),
+                      );
+                    }
+                  },
+                  child: const Text('Check Health'),
                 ),
-              ElevatedButton(
-                onPressed: () {
-                  print('Button Pressed!');
-                },
-                child: const Text('Press Me'),
-              ),
             ],
           ),
         ),

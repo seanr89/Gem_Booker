@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../models/location_model.dart';
-import '../models/models.dart'; // Import go_router
 
 class LocationsScreen extends StatelessWidget {
   // Can be StatelessWidget if locations are passed in
