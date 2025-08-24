@@ -4,9 +4,9 @@
 
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_nav/models/location_model.dart';
 import 'package:http/http.dart' as http;
 import 'api_exception.dart';
-import '../models/building_model.dart';
 import '../models/seat_model.dart';
 import '../models/booking_model.dart';
 
@@ -55,10 +55,9 @@ class AzureApiService {
   // -------------------------------------------------------------------
   Future<bool> checkHealth() async {
     print('Checking health...');
-    final user = FirebaseAuth.instance.currentUser!;
-    final idToken = await user.getIdToken();
-    final token = idToken;
+    final token = await getUserToken();
     setAuthToken(token!);
+
     final response = await http.get(
       Uri.parse('$_baseUrl/api/Home/CheckDbConnection'),
       headers: _getHeaders(),
@@ -74,40 +73,30 @@ class AzureApiService {
   // Locations Endpoints
   // -------------------------------------------------------------------
 
-  // -------------------------------------------------------------------
-  // Building Endpoints
-  // -------------------------------------------------------------------
+  Future<List<LocationItem>> getLocations() async {
+    print('Getting locations...');
+    final token = await getUserToken();
+    setAuthToken(token!);
 
-  /// Fetches a list of all buildings.
-  Future<List<Building>> getBuildings() async {
-    print('Getting buildings...');
     final response = await http.get(
-      Uri.parse('$_baseUrl/building'),
+      Uri.parse('$_baseUrl/api/Location/GetLocations'),
       headers: _getHeaders(),
     );
     final List<dynamic> responseData = _handleResponse(response);
-    return responseData.map((json) => Building.fromJson(json)).toList();
+    return responseData.map((json) => LocationItem.fromJson(json)).toList();
   }
 
-  /// Creates a new building.
-  Future<Building> createBuilding(CreateBuildingDto createBuildingDto) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/building'),
-      headers: _getHeaders(),
-      body: json.encode(createBuildingDto.toJson()),
-    );
-    final responseData = _handleResponse(response);
-    return Building.fromJson(responseData);
-  }
+  Future<LocationItem> getLocationById(int id) async {
+    print('Getting location with id: $id...');
+    final token = await getUserToken();
+    setAuthToken(token!);
 
-  /// Fetches all seats for a specific building.
-  Future<List<Seat>> getSeatsForBuilding(String buildingId) async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/building/$buildingId/seats'),
+      Uri.parse('$_baseUrl/api/Location/GetLocation/$id'),
       headers: _getHeaders(),
     );
-    final List<dynamic> responseData = _handleResponse(response);
-    return responseData.map((json) => Seat.fromJson(json)).toList();
+    final dynamic responseData = _handleResponse(response);
+    return responseData.map((json) => LocationItem.fromJson(json));
   }
 
   // -------------------------------------------------------------------
@@ -159,5 +148,12 @@ class AzureApiService {
     );
     final List<dynamic> responseData = _handleResponse(response);
     return responseData.map((json) => Booking.fromJson(json)).toList();
+  }
+
+  Future<String?> getUserToken() async {
+    final user = FirebaseAuth.instance.currentUser!;
+    final idToken = await user.getIdToken();
+    final token = idToken;
+    return token;
   }
 }

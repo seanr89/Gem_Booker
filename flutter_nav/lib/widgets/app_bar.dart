@@ -12,7 +12,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final authState = ref.watch(authStateChangesProvider);
 
     return AppBar(
-      title: const Text('Booker'),
+      title: const Text('Seat Booker'),
       actions: [
         if (authState.value == null) ...[
           TextButton(

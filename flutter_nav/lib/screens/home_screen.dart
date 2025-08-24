@@ -115,43 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            Card(
-              elevation: 2.0,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.health_and_safety,
-                        size: 40.0, color: Colors.redAccent),
-                    const SizedBox(height: 10.0),
-                    Text(
-                      'System Health (Local)', // Clarify this is different
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.grey[700],
-                          ),
-                    ),
-                    const SizedBox(height: 5.0),
-                    Text(
-                      '${(systemHealthValue * 100).toStringAsFixed(0)}%',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    LinearProgressIndicator(
-                      value: systemHealthValue,
-                      backgroundColor: Colors.grey[300],
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.redAccent),
-                      minHeight: 6,
-                    ),
-                  ],
-                ),
-              ),
-            ),
             ComplexDashboardCard(
               title: 'Recent Activities',
               titleIcon: Icons.history,

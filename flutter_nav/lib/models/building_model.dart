@@ -23,25 +23,3 @@ class Building {
     );
   }
 }
-
-/// Represents the data needed to create a new building.
-class CreateBuildingDto {
-  final String name;
-  final String location;
-  final int seats;
-
-  CreateBuildingDto({
-    required this.name,
-    required this.location,
-    required this.seats,
-  });
-
-  /// Converts the DTO to a JSON map for the API request body.
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'location': location,
-      'seats': seats,
-    };
-  }
-}
