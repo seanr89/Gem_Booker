@@ -54,7 +54,7 @@ class AzureApiService {
   // HealthCheck Endpoints
   // -------------------------------------------------------------------
   Future<bool> checkHealth() async {
-    print('Checking health...');
+    //print('Checking health...');
     final token = await getUserToken();
     setAuthToken(token!);
 
