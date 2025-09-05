@@ -54,7 +54,21 @@ class AzureApiService {
   // HealthCheck Endpoints
   // -------------------------------------------------------------------
   Future<bool> checkHealth() async {
-    //print('Checking health...');
+    final token = await getUserToken();
+    setAuthToken(token!);
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/api/Home/HealthCheck'),
+      headers: _getHeaders(),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> checkDbHealth() async {
     final token = await getUserToken();
     setAuthToken(token!);
 
@@ -73,6 +87,7 @@ class AzureApiService {
   // Locations Endpoints
   // -------------------------------------------------------------------
 
+  /// get all location
   Future<List<LocationItem>> getLocations() async {
     print('Getting locations...');
     final token = await getUserToken();
@@ -86,6 +101,7 @@ class AzureApiService {
     return responseData.map((json) => LocationItem.fromJson(json)).toList();
   }
 
+  /// request a single location by Id
   Future<LocationItem> getLocationById(int id) async {
     print('Getting location with id: $id...');
     final token = await getUserToken();

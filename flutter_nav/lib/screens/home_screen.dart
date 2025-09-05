@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       if (!mounted) return;
-      print("Error fetching API status: $e");
+      //print("Error fetching API status: $e");
       setState(() {
         _apiStatus =
             ApiStatus.unhealthy; // Or unknown, depending on error handling
